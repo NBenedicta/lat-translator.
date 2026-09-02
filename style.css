@@ -1,0 +1,435 @@
+/* ===========================
+   LAT — Language Translator
+   =========================== */
+
+:root {
+  --bg: #0a1628;
+  --bg-glow: #0f1f38;
+  --card: #13223d;
+  --card-alt: #16274a;
+  --border: #223759;
+  --border-light: #2c4368;
+  --text: #ffffff;
+  --text-dim: #9fb0c9;
+  --text-dimmer: #6e7f9c;
+  --accent: #2563eb;
+  --accent-hover: #3b74f0;
+  --accent-dim: #1d4ed8;
+  --danger: #ef4444;
+  --danger-bg: #3a1620;
+  --success: #22c55e;
+  --radius-lg: 20px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --shadow-card: 0 20px 60px -20px rgba(0, 0, 0, 0.6);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 16px 24px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.bg-glow {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(600px 400px at 15% 0%, rgba(37, 99, 235, 0.16), transparent 60%),
+    radial-gradient(500px 350px at 90% 20%, rgba(37, 99, 235, 0.10), transparent 60%),
+    var(--bg);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- Header ---------- */
+
+.site-header {
+  text-align: center;
+  margin-bottom: 28px;
+  animation: fadeInDown 0.6s ease both;
+}
+
+.logo {
+  margin: 0;
+  font-size: clamp(2.2rem, 6vw, 3rem);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  background: linear-gradient(135deg, #ffffff, #a9c2ff 70%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  margin: 6px 0 0;
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* ---------- Main / Card ---------- */
+
+main {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.translator-card {
+  width: 100%;
+  max-width: 980px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  animation: fadeInUp 0.6s ease 0.1s both;
+}
+
+.panels-row {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+}
+
+.panel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--card-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.panel:focus-within {
+  border-color: var(--accent-dim);
+}
+
+.panel-top {
+  margin-bottom: 10px;
+}
+
+.lang-select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 9px 32px 9px 12px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239fb0c9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+  transition: border-color 0.2s ease;
+}
+
+.lang-select:hover,
+.lang-select:focus {
+  border-color: var(--accent);
+  outline: none;
+}
+
+.text-area {
+  width: 100%;
+  flex: 1;
+  min-height: 160px;
+  resize: none;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.5;
+  padding: 4px 2px;
+}
+
+.text-area::placeholder {
+  color: var(--text-dimmer);
+}
+
+.text-area:focus {
+  outline: none;
+}
+
+.output-area {
+  cursor: default;
+  color: #dfe9ff;
+}
+
+.output-wrap {
+  position: relative;
+  flex: 1;
+  display: flex;
+}
+
+.panel-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  min-height: 28px;
+}
+
+.char-count,
+.char-count-spacer {
+  font-size: 0.78rem;
+  color: var(--text-dimmer);
+}
+
+.text-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 5px 8px;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.text-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+}
+
+.copy-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.copied-tip {
+  position: absolute;
+  right: 0;
+  bottom: 34px;
+  background: var(--success);
+  color: #06210f;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  animation: fadeInUp 0.15s ease both;
+}
+
+/* ---------- Swap button ---------- */
+
+.swap-btn {
+  align-self: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border-light);
+  background: var(--card-alt);
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.swap-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  transform: rotate(180deg);
+}
+
+.swap-btn:active {
+  transform: rotate(180deg) scale(0.92);
+}
+
+/* ---------- Spinner ---------- */
+
+.spinner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--card-alt);
+}
+
+.spinner[hidden] {
+  display: none;
+}
+
+.spinner .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: bounce 1s infinite ease-in-out;
+}
+
+.spinner .dot:nth-child(2) { animation-delay: 0.15s; }
+.spinner .dot:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
+  40% { transform: translateY(-6px); opacity: 1; }
+}
+
+/* ---------- Error box ---------- */
+
+.error-box {
+  margin-top: 14px;
+  background: var(--danger-bg);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #ffb4b4;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  animation: fadeInUp 0.2s ease both;
+}
+
+/* ---------- Actions ---------- */
+
+.actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.translate-btn {
+  background: var(--accent);
+  color: #ffffff;
+  border: none;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 13px 42px;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 10px 30px -10px rgba(37, 99, 235, 0.7);
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+.translate-btn:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 34px -10px rgba(37, 99, 235, 0.85);
+}
+
+.translate-btn:active {
+  transform: translateY(0);
+}
+
+.translate-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ---------- Footer ---------- */
+
+.site-footer {
+  margin-top: 32px;
+  text-align: center;
+}
+
+.site-footer p {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-dimmer);
+}
+
+/* ---------- Animations ---------- */
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeInUp 0.35s ease both;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 700px) {
+  .panels-row {
+    flex-direction: column;
+  }
+
+  .swap-btn {
+    align-self: center;
+    margin: -4px 0;
+    transform: rotate(90deg);
+  }
+
+  .swap-btn:hover {
+    transform: rotate(270deg);
+  }
+
+  .swap-btn:active {
+    transform: rotate(270deg) scale(0.92);
+  }
+
+  .text-area {
+    min-height: 120px;
+  }
+
+  .translator-card {
+    padding: 16px;
+    border-radius: var(--radius-md);
+  }
+
+  .translate-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 400px) {
+  .logo {
+    letter-spacing: 0.04em;
+  }
+}

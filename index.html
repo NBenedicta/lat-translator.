@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>LAT — Language Translator</title>
+<meta name="description" content="LAT is a fast, free, minimal language translator supporting 25 languages." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="bg-glow" aria-hidden="true"></div>
+
+<header class="site-header">
+  <h1 class="logo">LAT</h1>
+  <p class="subtitle">Language Translator</p>
+</header>
+
+<main>
+  <section class="translator-card" aria-label="Translator">
+
+    <div class="panels-row">
+
+      <!-- SOURCE PANEL -->
+      <div class="panel source-panel">
+        <div class="panel-top">
+          <label class="visually-hidden" for="sourceLang">Source language</label>
+          <select id="sourceLang" class="lang-select"></select>
+        </div>
+
+        <textarea
+          id="sourceText"
+          class="text-area"
+          placeholder="Type or paste text to translate…"
+          maxlength="2000"
+          spellcheck="true"
+        ></textarea>
+
+        <div class="panel-bottom">
+          <span id="charCount" class="char-count">0 / 2000</span>
+          <button id="clearBtn" class="text-btn" type="button" title="Clear text">Clear</button>
+        </div>
+      </div>
+
+      <!-- SWAP BUTTON -->
+      <button id="swapBtn" class="swap-btn" type="button" title="Swap languages" aria-label="Swap languages">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="17 1 21 5 17 9"></polyline>
+          <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+          <polyline points="7 23 3 19 7 15"></polyline>
+          <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+        </svg>
+      </button>
+
+      <!-- TARGET PANEL -->
+      <div class="panel target-panel">
+        <div class="panel-top">
+          <label class="visually-hidden" for="targetLang">Target language</label>
+          <select id="targetLang" class="lang-select"></select>
+        </div>
+
+        <div class="output-wrap">
+          <textarea
+            id="outputText"
+            class="text-area output-area"
+            placeholder="Translation will appear here…"
+            readonly
+            tabindex="-1"
+          ></textarea>
+
+          <div id="spinner" class="spinner" hidden>
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          </div>
+        </div>
+
+        <div class="panel-bottom">
+          <span class="char-count-spacer"></span>
+          <div class="copy-wrap">
+            <button id="copyBtn" class="text-btn" type="button" title="Copy translation">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              Copy
+            </button>
+            <span id="copiedTip" class="copied-tip" hidden>Copied!</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="errorBox" class="error-box" hidden role="alert"></div>
+
+    <div class="actions">
+      <button id="translateBtn" class="translate-btn" type="button">Translate</button>
+    </div>
+
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>Built with LAT · Powered by the free MyMemory Translation API</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
