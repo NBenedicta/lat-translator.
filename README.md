@@ -1,96 +1,70 @@
 # LAT — Language Translator
 
-A single-page translator built with plain HTML, CSS, and JavaScript, backed by a small
-serverless function that calls **DeepL** (high-quality) with **MyMemory** as a fallback
-for the two languages DeepL doesn't support (Yoruba, Amharic).
+**🔗 Live: [gorgeous-ganache-6bfb6f.netlify.app](https://gorgeous-ganache-6bfb6f.netlify.app)**
 
-## Why a serverless function?
+A clean, single-page translator supporting 25 languages, backed by the DeepL API for
+high-quality machine translation.
 
-DeepL gives far better, correct translations than free lookup-based services — but its
-API key can't be safely put in front-end JavaScript (anyone could read it from page
-source and burn your quota), and DeepL doesn't allow direct browser calls (no CORS).
-So the frontend calls a tiny `/api/translate` function on your own hosting, which holds
-the key server-side and calls DeepL for you. Everything else is still plain static files.
+## Features
 
-## Files
+- Translate between 25 languages, including English, Spanish, French, German,
+  Mandarin, Japanese, Arabic, Hindi, Swahili, Zulu, and more
+- Auto-detect the source language
+- One-click swap between source and target
+- Copy translated text to clipboard
+- Dark, responsive UI — works on mobile, tablet, and desktop
+- Graceful error handling if the translation service is unavailable
 
-- `index.html`, `style.css`, `script.js` — the frontend (unchanged shape from before)
-- `lib/translate-core.js` — shared translation logic (DeepL + MyMemory fallback)
-- `netlify/functions/translate.js` — Netlify Functions adapter
-- `api/translate.js` — Vercel Serverless Functions adapter
-- `netlify.toml` — maps `/api/translate` to the Netlify function, so the frontend can
-  call the same path on either platform
+## Tech stack
 
-No npm dependencies — both functions use the runtime's built-in `fetch`.
+- **Frontend:** HTML, CSS, vanilla JavaScript — no framework, no build step
+- **Translation engine:** [DeepL API](https://www.deepl.com/en/pro-api) (primary),
+  with [MyMemory](https://mymemory.translated.net/) as an automatic fallback for the
+  two languages DeepL doesn't yet support (Yoruba, Amharic)
+- **Backend:** a single serverless function (deployed on Netlify Functions) that
+  proxies translation requests so the API key never reaches the browser
+- **Hosting:** [Netlify](https://www.netlify.com/), deployed straight from this repo
 
-## 1. Get a free DeepL API key
-
-1. Go to <https://www.deepl.com/en/pro-api> and sign up for **DeepL API Free**
-   (500,000 characters/month, no cost). Some signup flows ask for a card — you are
-   **not charged** unless you separately upgrade to a paid plan.
-2. Copy your API key from the account page. Free-plan keys end in `:fx` — the function
-   detects that suffix automatically and calls the right DeepL endpoint.
-
-## 2. Deploy
-
-Because of the serverless function, this is a one-command CLI deploy rather than a
-plain drag-and-drop — still free, still no separate backend to manage.
-
-### Netlify
+## How it works
 
 ```
-npx netlify-cli deploy --prod
+Browser (script.js)
+   │  POST /api/translate  { text, source, target }
+   ▼
+Netlify Function (netlify/functions/translate.js)
+   │  looks up DEEPL_API_KEY from environment
+   ▼
+DeepL API  ──(unsupported language)──▶  MyMemory API
+   │
+   ▼
+{ translatedText, detectedSourceLang }
 ```
 
-Follow the prompts to create/link a site. Then set your key:
+## Run it yourself
 
-```
-npx netlify-cli env:set DEEPL_API_KEY "your-key-here"
-```
-
-(or Site settings → Environment variables in the Netlify dashboard), then redeploy
-(`npx netlify-cli deploy --prod`) so the function picks it up.
-
-### Vercel
-
-```
-npx vercel --prod
+```bash
+git clone https://github.com/NBenedicta/lat-translator.git
+cd lat-translator
+npx netlify-cli dev   # serves the site + the function locally
 ```
 
-Then set the key in Project Settings → Environment Variables (`DEEPL_API_KEY`), or via
-CLI:
+You'll need a free DeepL API key — sign up at
+[deepl.com/en/pro-api](https://www.deepl.com/en/pro-api), then add it to a local
+`.env` file:
 
 ```
-npx vercel env add DEEPL_API_KEY
+DEEPL_API_KEY=your-key-here
 ```
 
-and redeploy.
+## Deploy your own copy
 
-### GitHub Pages
+1. Fork/clone this repo, push it to your own GitHub
+2. On [Netlify](https://app.netlify.com), **Add new site → Import an existing project → Deploy with GitHub**, pick the repo
+3. In **Site configuration → Environment variables**, add `DEEPL_API_KEY` with your key
+4. Trigger a deploy
 
-Won't work here — GitHub Pages only serves static files, it can't run the
-`/api/translate` function. Use Netlify or Vercel instead.
+Full details are in [`DEPLOY.md`](DEPLOY.md).
 
-## Test locally
+---
 
-```
-npx netlify-cli dev
-```
-
-or
-
-```
-npx vercel dev
-```
-
-Either serves the site and runs `/api/translate` locally. Put your key in a `.env`
-file first (`DEEPL_API_KEY=your-key-here`) — see `.env.example`.
-
-## Notes
-
-- **Auto-Detect** is handled by DeepL itself when you leave Source on Auto-Detect
-  (its detection is reliable — no more guesswork).
-- **Yoruba and Amharic** aren't yet supported by DeepL, so those two automatically use
-  MyMemory instead — quality for just those two is more variable than the rest.
-- If `DEEPL_API_KEY` isn't set yet, translations for DeepL-covered languages return a
-  clear error explaining that, rather than failing silently.
+Built by [NBenedicta](https://github.com/NBenedicta).
